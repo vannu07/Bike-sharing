@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bike Sharing Demand Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-bicycle"></i>
+                <h1>Bike Sharing Demand Predictor</h1>
+            </div>
+            <p class="subtitle">Predict bike rental demand based on weather and seasonal factors</p>
+        </header>
+
+        <div class="main-content">
+            <div class="form-container">
+                <form id="predictionForm" class="prediction-form">
+                    <div class="form-section">
+                        <h3><i class="fas fa-calendar-alt"></i> Date & Time</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="year">Year</label>
+                                <select id="year" name="year" required>
+                                    <option value="">Select Year</option>
+                                    <option value="0">2018</option>
+                                    <option value="1">2019</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="month">Month</label>
+                                <select id="month" name="month" required>
+                                    <option value="">Select Month</option>
+                                    <option value="Jan">January</option>
+                                    <option value="Feb">February</option>
+                                    <option value="Mar">March</option>
+                                    <option value="Apr">April</option>
+                                    <option value="May">May</option>
+                                    <option value="Jun">June</option>
+                                    <option value="Jul">July</option>
+                                    <option value="Aug">August</option>
+                                    <option value="Sep">September</option>
+                                    <option value="Oct">October</option>
+                                    <option value="Nov">November</option>
+                                    <option value="Dec">December</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="weekday">Day of Week</label>
+                                <select id="weekday" name="weekday" required>
+                                    <option value="">Select Day</option>
+                                    <option value="Mon">Monday</option>
+                                    <option value="Tue">Tuesday</option>
+                                    <option value="Wed">Wednesday</option>
+                                    <option value="Thurs">Thursday</option>
+                                    <option value="Fri">Friday</option>
+                                    <option value="Sat">Saturday</option>
+                                    <option value="Sun">Sunday</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3><i class="fas fa-cloud-sun"></i> Weather Conditions</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="temperature">Temperature (°C)</label>
+                                <input type="number" id="temperature" name="temperature" 
+                                       min="-10" max="40" step="0.1" required
+                                       placeholder="Enter temperature">
+                            </div>
+                            <div class="form-group">
+                                <label for="humidity">Humidity (%)</label>
+                                <input type="number" id="humidity" name="humidity" 
+                                       min="0" max="100" step="1" required
+                                       placeholder="Enter humidity">
+                            </div>
+                            <div class="form-group">
+                                <label for="windspeed">Wind Speed (km/h)</label>
+                                <input type="number" id="windspeed" name="windspeed" 
+                                       min="0" max="50" step="0.1" required
+                                       placeholder="Enter wind speed">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="weather">Weather Condition</label>
+                            <select id="weather" name="weather" required>
+                                <option value="">Select Weather</option>
+                                <option value="Clear">Clear</option>
+                                <option value="Light_rainfall">Light Rainfall</option>
+                                <option value="Thunderstrom">Thunderstorm</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3><i class="fas fa-leaf"></i> Seasonal & Special Days</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="season">Season</label>
+                                <select id="season" name="season" required>
+                                    <option value="">Select Season</option>
+                                    <option value="Spring">Spring</option>
+                                    <option value="Summer">Summer</option>
+                                    <option value="Fall">Fall</option>
+                                    <option value="Winter">Winter</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="holiday">Holiday</label>
+                                <select id="holiday" name="holiday" required>
+                                    <option value="0">No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="workingday">Working Day</label>
+                                <select id="workingday" name="workingday" required>
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="predict-btn">
+                        <i class="fas fa-chart-line"></i>
+                        Predict Bike Demand
+                    </button>
+                </form>
+            </div>
+
+            <div class="result-container" id="resultContainer" style="display: none;">
+                <div class="result-card">
+                    <h3><i class="fas fa-bicycle"></i> Prediction Result</h3>
+                    <div class="prediction-value" id="predictionValue">0</div>
+                    <div class="prediction-label">Expected Bike Rentals</div>
+                    <div class="confidence-info">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Model Accuracy: ~83%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3><i class="fas fa-lightbulb"></i> Model Insights</h3>
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <i class="fas fa-thermometer-half"></i>
+                    <h4>Temperature Impact</h4>
+                    <p>Higher temperatures significantly increase bike rental demand</p>
+                </div>
+                <div class="insight-card">
+                    <i class="fas fa-calendar-check"></i>
+                    <h4>Year Growth</h4>
+                    <p>Bike sharing popularity has grown substantially year over year</p>
+                </div>
+                <div class="insight-card">
+                    <i class="fas fa-cloud-rain"></i>
+                    <h4>Weather Sensitivity</h4>
+                    <p>Rain and storms significantly reduce bike rental demand</p>
+                </div>
+                <div class="insight-card">
+                    <i class="fas fa-leaf"></i>
+                    <h4>Seasonal Patterns</h4>
+                    <p>Summer and fall seasons show higher bike rental activity</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
