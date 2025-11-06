@@ -6,7 +6,7 @@ import os
 from sklearn.preprocessing import MinMaxScaler
 import warnings
 warnings.filterwarnings('ignore')
-
+import logging
 app = Flask(__name__)
 
 class BikeSharingPredictor:
@@ -151,8 +151,9 @@ def predict():
         })
     
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
+        # Log actual exception and stack trace server-side
+        logging.error("Error in /predict: %s", e, exc_info=True)
+        return jsonify({'error': 'An internal error has occurred.'}), 500
 @app.route('/health')
 def health():
     return jsonify({'status': 'healthy'})
