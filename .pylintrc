@@ -1,0 +1,66 @@
+[MASTER]
+py-version=3.8
+load-plugins=
+jobs=1
+
+[MESSAGES CONTROL]
+disable=
+    import-error,
+    missing-module-docstring,
+
+[REPORTS]
+output-format=text
+reports=no
+score=yes
+
+[REFACTORING]
+max-nested-blocks=5
+
+[LOGGING]
+logging-format-style=old
+logging-modules=logging
+
+[SPELLING]
+max-spelling-suggestions=4
+
+[MISCELLANEOUS]
+notes=FIXME,XXX,TODO
+
+[TYPECHECK]
+contextmanager-decorators=contextlib.contextmanager
+ignore-mixin-members=yes
+ignore-on-opaque-inference=yes
+
+[FORMAT]
+ignore-long-lines=^\s*(# )?<?https?://\S+>?$
+indent-after-paren=4
+indent-string='    '
+max-line-length=100
+max-module-lines=1000
+
+[VARIABLES]
+allow-global-unused-variables=yes
+dummy-variables-rgx=_+$|(_[a-zA-Z0-9_]*[a-zA-Z0-9]+?$)|dummy|^ignored_|^unused_
+ignored-argument-names=_.*|^ignored_|^unused_
+init-import=no
+
+[CLASSES]
+defining-attr-methods=__init__,__new__,setUp,__post_init__
+exclude-protected=_asdict,_fields,_replace,_source,_make,os._exit
+valid-classmethod-first-arg=cls
+valid-metaclass-classmethod-first-arg=cls
+
+[DESIGN]
+max-args=5
+max-attributes=7
+max-bool-expr=5
+max-branches=12
+max-locals=15
+max-parents=7
+max-public-methods=20
+max-returns=6
+max-statements=50
+min-public-methods=2
+
+[IMPORTS]
+known-third-party=numpy,pandas,sklearn,flask,requests
