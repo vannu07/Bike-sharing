@@ -35,7 +35,6 @@ def run_application():
         # Import and run the app
         from app import app  # pylint: disable=import-outside-toplevel
         app.run(debug=False, host='0.0.0.0', port=5000)
-        return True
     except KeyboardInterrupt:
         print("\n👋 Application stopped by user")
         return True
