@@ -152,7 +152,7 @@ def predict():
             'prediction': prediction,
             'status': 'success'
         })
-    except ValueError as e:
+    except Exception as e:
         # Log actual exception and stack trace server-side
         logging.error("Error in /predict: %s", e, exc_info=True)
         return jsonify({'error': 'An internal error has occurred.'}), 500
