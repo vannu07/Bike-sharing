@@ -6,7 +6,6 @@ Setup script for Bike Sharing Demand Prediction Project
 import os
 import sys
 import subprocess
-import platform
 
 def install_requirements():
     """Install required packages from requirements.txt"""
@@ -53,22 +52,22 @@ def main():
     """Main setup function"""
     print("🚴‍♂️ Bike Sharing Demand Prediction Project Setup")
     print("=" * 50)
-    
+
     # Check Python version
     if not check_python_version():
         sys.exit(1)
-    
+
     # Create directories
     create_directories()
-    
+
     # Install requirements
     if not install_requirements():
         sys.exit(1)
-    
+
     # Run tests
     if not run_tests():
         print("⚠️  Tests failed, but setup completed. Check the issues above.")
-    
+
     print("\n🎉 Setup completed successfully!")
     print("\nTo run the application:")
     print("  python app.py")

@@ -1,12 +1,10 @@
 name: Greetings
 
-# Security Note: This workflow uses 'pull_request_target' which runs in the context
-# of the base repository and has access to secrets. This is safe here because:
-# 1. The workflow only posts automated greeting comments
-# 2. It does NOT check out any code from the pull request
-# 3. It does NOT execute any code from the pull request
-# The 'pull_request_target' trigger is necessary to allow the workflow to comment
-# on pull requests from forks, which require write permissions.
+# Security note: We intentionally use `pull_request_target` here so this workflow
+# can run with repository permissions and the default GITHUB_TOKEN to post comments
+# on first-time pull requests. This job only uses `actions/first-interaction` to
+# create issue/PR comments and does not check out or execute any code from the PR,
+# which has been reviewed and deemed safe for this trigger.
 on: [pull_request_target, issues]
 
 jobs:

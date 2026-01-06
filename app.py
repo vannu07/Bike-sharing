@@ -1,24 +1,26 @@
+"""Bike Sharing Demand Prediction Flask Application"""
+import logging
+import warnings
+
 from flask import Flask, render_template, request, jsonify
 import pandas as pd
-import numpy as np
-import pickle
-import os
 from sklearn.preprocessing import MinMaxScaler
-import warnings
+
 warnings.filterwarnings('ignore')
-import logging
+
 app = Flask(__name__)
 
 class BikeSharingPredictor:
+    """Predictor class for bike sharing demand"""
     def __init__(self):
         self.model = None
         self.scaler = MinMaxScaler()
         self.feature_columns = [
-            'yr', 'temp', 'hum', 'windspeed', 'Spring', 'Winter', 
+            'yr', 'temp', 'hum', 'windspeed', 'Spring', 'Winter',
             'Jul', 'Jun', 'Aug', 'Light_rainfall', 'Thunderstrom'
         ]
         self.load_model()
-    
+
     def load_model(self):
         """Load the trained model coefficients"""
         # Model coefficients from the notebook analysis
@@ -36,7 +38,7 @@ class BikeSharingPredictor:
             'Light_rainfall': -0.045,
             'Thunderstrom': -0.203
         }
-    
+
     def preprocess_input(self, data):
         """Preprocess input data to match model requirements"""
         # Create a DataFrame with all possible features
@@ -73,12 +75,12 @@ class BikeSharingPredictor:
             'Sat': [1 if data.get('weekday') == 'Sat' else 0],
             'Sun': [1 if data.get('weekday') == 'Sun' else 0]
         })
-        
+
         # Scale numeric features (using approximate scaling based on dataset ranges)
         numeric_features = ['temp', 'atemp', 'hum', 'windspeed']
         for feature in numeric_features:
-            if feature == 'temp' or feature == 'atemp':
-                # Temperature is typically normalized between 0-1 (assuming 0-40°C range)
+            if feature in ('temp', 'atemp'):
+                # Temperature is normalized between 0-1 (assuming 0-40°C range)
                 features[feature] = features[feature] / 40.0
             elif feature == 'hum':
                 # Humidity is already in 0-1 range
@@ -86,76 +88,78 @@ class BikeSharingPredictor:
             elif feature == 'windspeed':
                 # Windspeed normalized (assuming 0-50 km/h range)
                 features[feature] = features[feature] / 50.0
-        
+
         return features
-    
+
     def predict(self, data):
         """Make prediction using the linear regression model"""
         try:
             # Preprocess input
             features = self.preprocess_input(data)
-            
+
             # Calculate prediction using the linear equation
             prediction = self.coefficients['const']
-            
+
             for feature in self.feature_columns:
                 if feature in features.columns:
                     prediction += self.coefficients[feature] * features[feature].iloc[0]
-            
+
             # Convert back to actual bike count (denormalize)
             # Assuming the model predicts normalized values, we need to scale back
             # This is an approximation - in real scenario, you'd save the scaler
             prediction = max(0, prediction * 1000)  # Scale factor approximation
-            
+
             return round(prediction)
-        
-        except Exception as e:
-            print(f"Error in prediction: {str(e)}")
+        except (KeyError, ValueError, TypeError):
             return 0
+
 
 # Initialize predictor
 predictor = BikeSharingPredictor()
 
 @app.route('/')
 def index():
+    """Render the main index page"""
     return render_template('index.html')
 
 @app.route('/predict', methods=['POST'])
 def predict():
+    """Handle prediction requests"""
     try:
         # Check if request has JSON data
         if not request.is_json:
             return jsonify({'error': 'Request must be JSON'}), 400
-            
+
         try:
             data = request.get_json()
-        except Exception:
+        except ValueError:
             return jsonify({'error': 'Invalid JSON data'}), 400
-        
+
         # Check if data is None (invalid JSON)
         if data is None:
             return jsonify({'error': 'Invalid JSON data'}), 400
-        
+
         # Validate required fields
-        required_fields = ['year', 'temperature', 'humidity', 'windspeed', 'season', 'month', 'weather', 'weekday']
+        required_fields = ['year', 'temperature', 'humidity', 'windspeed',
+                          'season', 'month', 'weather', 'weekday']
         for field in required_fields:
             if field not in data:
                 return jsonify({'error': f'Missing required field: {field}'}), 400
-        
+
         # Make prediction
         prediction = predictor.predict(data)
-        
         return jsonify({
             'prediction': prediction,
             'status': 'success'
         })
-    
     except Exception as e:
         # Log actual exception and stack trace server-side
         logging.error("Error in /predict: %s", e, exc_info=True)
         return jsonify({'error': 'An internal error has occurred.'}), 500
+
 @app.route('/health')
 def health():
+    """Health check endpoint"""
     return jsonify({'status': 'healthy'})
 
 if __name__ == '__main__':
