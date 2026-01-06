@@ -1,5 +1,10 @@
 name: Greetings
 
+# Security note: We intentionally use `pull_request_target` here so this workflow
+# can run with repository permissions and the default GITHUB_TOKEN to post comments
+# on first-time pull requests. This job only uses `actions/first-interaction` to
+# create issue/PR comments and does not check out or execute any code from the PR,
+# which has been reviewed and deemed safe for this trigger.
 on: [pull_request_target, issues]
 
 jobs:
