@@ -1,0 +1,21 @@
+name: Greetings
+
+# Security note: We intentionally use `pull_request_target` here so this workflow
+# can run with repository permissions and the default GITHUB_TOKEN to post comments
+# on first-time pull requests. This job only uses `actions/first-interaction` to
+# create issue/PR comments and does not check out or execute any code from the PR,
+# which has been reviewed and deemed safe for this trigger.
+on: [pull_request_target, issues]
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+    - uses: actions/first-interaction@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        issue-message: "👋 Thanks for opening your first issue in this repository! We appreciate you taking the time to report a problem or suggest an improvement. Please take a moment to review our contributing guidelines (CONTRIBUTING.md) and code of conduct (CODE_OF_CONDUCT.md) so we can work together effectively. A maintainer will review your issue as soon as possible."
+        pr-message: "🎉 Thank you for submitting your first pull request to this repository! We really appreciate your contribution. Before we review, please ensure you've read our contributing guidelines (CONTRIBUTING.md) and that your changes follow any documented style or testing requirements. A maintainer will provide feedback or merge this PR as soon as they can."
