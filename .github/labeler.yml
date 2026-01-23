@@ -21,7 +21,6 @@ backend:
       - 'app.py'
       - 'demo.py'
       - 'run.py'
-      - 'setup.py'
       - '*.py'
     - all-globs-to-all-files: '!test_*.py'
 
