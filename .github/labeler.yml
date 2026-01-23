@@ -1,0 +1,67 @@
+# Configuration for actions/labeler
+# This file defines which labels should be automatically applied to pull requests
+# based on which files/paths are modified.
+
+# Documentation changes
+documentation:
+  - changed-files:
+    - any-glob-to-any-file: ['*.md', '*.txt', '*.pdf', 'docs/**/*']
+
+# Frontend changes (HTML, CSS, JavaScript)
+frontend:
+  - changed-files:
+    - any-glob-to-any-file: 
+      - 'templates/**/*'
+      - 'static/**/*.{css,js,html}'
+
+# Backend changes (Python application code)
+backend:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'app.py'
+      - 'demo.py'
+      - 'run.py'
+      - 'setup.py'
+      - '*.py'
+    - all-globs-to-all-files: '!test_*.py'
+
+# Testing changes
+tests:
+  - changed-files:
+    - any-glob-to-any-file: 
+      - 'test_*.py'
+      - 'tests/**/*'
+      - '**/test_*.py'
+
+# GitHub Actions & CI/CD workflows
+workflows:
+  - changed-files:
+    - any-glob-to-any-file: '.github/workflows/**/*'
+
+# Dependencies and configuration
+dependencies:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'requirements.txt'
+      - 'setup.py'
+      - 'pyproject.toml'
+      - 'Pipfile'
+      - 'Pipfile.lock'
+      - 'poetry.lock'
+
+# Jupyter notebooks and data analysis
+notebooks:
+  - changed-files:
+    - any-glob-to-any-file: '*.ipynb'
+
+# Configuration files
+config:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '.gitignore'
+      - '.github/labeler.yml'
+      - '*.yml'
+      - '*.yaml'
+      - '*.json'
+      - '*.toml'
+    - all-globs-to-all-files: '!.github/workflows/**/*'
